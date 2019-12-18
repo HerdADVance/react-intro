@@ -11,10 +11,10 @@ export default function Pet({ name, animal, breed, media, location, id}) {
     return (
         <div>
         	<img src={hero} />
-            <h1>{name}</h1>
+            <a href={`/details/${id}`}>{name}</a>
             <h2>{animal}</h2>
             <h3>{breed}</h3>
             <h4>{location}</h4>
         </div>
-    );
+    )
 }

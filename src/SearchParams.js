@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import pet, { ANIMALS } from "@frontendmasters/pet"; // Parcel automatically loads this (cool)
 import Results from "./Results";
 import useDropdown from "./useDropdown";
+import "babel-polyfill";
 
 const SearchParams = () => {
     // This is a hook (new). All Hooks begin with "use" (useState/Effect/CallBack/Memo/etc...)
