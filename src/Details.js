@@ -1,7 +1,10 @@
 import React from "react";
 import Pet from "@frontendmasters/pet"
+import { navigate } from '@reach/router'
+import Modal from './Modal'
 import Carousel from './Carousel'
 import ErrorBoundary from './ErrorBoundary'
+import ThemeContext from './ThemeContext'
 
 class Details extends React.Component{ // all class components must have render method
 	
@@ -15,12 +18,13 @@ class Details extends React.Component{ // all class components must have render 
 	// }
 
 	// Commented out above is old way. This is brand new JS, needs Babel for the time being
-	state = { loading: true }
+	state = { loading: true, showModal: false }
 
 	componentDidMount(){
 		// throw new Error("lol") // throwing this error to illustrate ErrorBoundary
 		Pet.animal(this.props.id).then(({ animal }) => {
 			this.setState({
+				url: animal.url,
 				name: animal.name,
 				animal: animal.type,
 				location: `${animal.contact.address.city}, ${animal.contact.address.state}`,
@@ -32,11 +36,15 @@ class Details extends React.Component{ // all class components must have render 
 		}, console.error)
 	}
 
+	toggleModal = () => this.setState({ showModal: !this.state.showModal })
+
+	adopt = () => navigate(this.state.url) // Navigate and Redirect both work well, matter of preference
+
 	render(){
 		if(this.state.loading){
 			return <h1>Loading...</h1>
 		}
-		const {name, animal, location, description, media, breed} = this.state
+		const {name, animal, location, description, media, showModal, breed, url} = this.state
 
 		return(
 			<div>
@@ -45,7 +53,20 @@ class Details extends React.Component{ // all class components must have render 
 					<h1>{name}</h1>
 					<h2>{`${animal} - ${breed} - ${location}`}</h2>
 					<p>{description}</p>
-					<button>Adopt {name}</button>
+					
+					{showModal ? (
+						<Modal>
+							<h1>Would you like to adopt {name}?</h1>
+							<div className="buttons">
+								<button onClick={this.adopt}>Yes</button>
+								<button onClick={this.toggleModal}>No, I am a monster</button>
+							</div>
+						</Modal>
+					) : null}
+					
+					<ThemeContext.Consumer>
+						{(themeHook) => (<button onClick={this.toggleModal} style={{backgroundColor:themeHook[0]}}>Adopt {name}!</button>)}
+					</ThemeContext.Consumer>
 				</div>
 			</div>
 		)

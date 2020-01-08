@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import pet, { ANIMALS } from "@frontendmasters/pet"; // Parcel automatically loads this (cool)
 import Results from "./Results";
 import useDropdown from "./useDropdown";
+import ThemeContext from "./ThemeContext"
+
 import "babel-polyfill";
+
 
 const SearchParams = () => {
     // This is a hook (new). All Hooks begin with "use" (useState/Effect/CallBack/Memo/etc...)
@@ -18,6 +21,7 @@ const SearchParams = () => {
     // const [breed, setBreed] = useState("")
     const [breed, BreedDropdown, setBreed] = useDropdown("Breed", "", breeds); //setBreed is coming from the 3rd param returned in useDropDown
     const [pets, setPets] = useState([]);
+    const [theme, setTheme] = useContext(ThemeContext) // using the ThemeContext provider
 
     async function requestPets() {
         const { animals } = await pet.animals({
@@ -62,9 +66,28 @@ const SearchParams = () => {
                 </label>
                 <AnimalDropdown />
                 <BreedDropdown />
-                <button>Submit</button>
+                
+                <label htmlFor="theme">
+                    Theme
+                    <select
+                        value={theme}
+                        onChange={e => setTheme(e.target.value)}
+                        onBlur={e => setTheme(e.target.value)}
+                    >
+                        <option value="dodgerblue">Dodger Blue</option> 
+                        <option value="peru">Peru</option>
+                        <option value="green">Green</option>
+                        <option value="pink">Pink</option>
+                    </select>
+                </label>
+
+                {/* Since this isn't a class, we don't have to use ThemeContext.Consumer */}
+                <button style={{backgroundColor: theme}}>Submit</button>
+            
             </form>
+            
             <Results pets={pets} />
+        
         </div>
     );
 };
